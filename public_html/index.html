@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Chat</title>
+
+        <link href="css/headers.css" rel="stylesheet" type="text/css" />
+
+        <link href="css/app.css" rel="stylesheet" type="text/css" />
+        <link href="css/input_areas.css" rel="stylesheet" type="text/css" />
+        <link href="css/buttons.css" rel="stylesheet" type="text/css" />
+    </head>
+
+    <body>
+        <div>
+            <section role="region">
+                <header>
+                    <h1>Chat App</h1>
+                </header>
+            </section>
+        </div>
+
+        <div>
+            <input id="owner" type="text" placeholder="Owner" value="" />
+            <input id="data" type="text" placeholder="Data" value="" />
+
+            <button id="Felvitel" class="recommend">Felvitel</button>
+            <button id="Lekeres" class="recommend">Lekérés</button>
+        </div>
+
+        <div id="Eredmeny">
+
+
+        </div>
+        <script type="text/javascript">
+            var appid = "Fulopj23";
+
+            function reqListener() {
+                console.log(this.responseText);
+            }
+
+            function sendData() {
+                var owner = document.getElementById("owner").value;
+                var text = document.getElementById("data").value;
+
+                var oReq = new XMLHttpRequest();
+                oReq.onload = reqListener;
+
+                oReq.open("post", "http://k-firefoxos.appspot.com/objects");
+                oReq.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                oReq.send("appid=" + appid + "&owner=" + owner + "&text=" + text);
+            }
+
+            function viewData() {
+                var div = document.getElementById("Eredmeny");
+                var p = document.createElement("p");
+                p.innerHTML = this.responseText;
+                div.appendChild(p);
+
+            }
+
+            function showData() {
+                document.getElementById("Eredmeny").innerHTML = "";
+                eval("var ids=" + this.responseText + ";");
+
+                for (var x = 0; x < ids.length - 1; x++) {
+                    console.log(ids [x]);
+                    var oReq = new XMLHttpRequest();
+                    oReq.onload = viewData;
+
+                    oReq.open("get", "http://k-firefoxos.appspot.com/objects?appid=" + appid + "&id=" + ids [x]);
+                    oReq.send();
+                }
+            }
+
+            function getData() {
+                var owner = document.getElementById("owner").value;
+
+                var oReq = new XMLHttpRequest();
+                oReq.onload = showData;
+
+                oReq.open("get", "http://k-firefoxos.appspot.com/objects?appid=" + appid + "&owner=" + owner);
+                oReq.send();
+            }
+
+            document.getElementById("Felvitel").addEventListener("click", sendData);
+            document.getElementById("Lekeres").addEventListener("click", getData);
+        </script>
+
+    </body>
+
+</html>
